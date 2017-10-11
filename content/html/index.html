@@ -29,19 +29,6 @@
     const title = document.getElementsByTagName ('h1')[0];
     const container = document.getElementsByClassName ('container')[0];
     const search_bar = document.querySelector ('.search-bar-input');
-    const search_bar_container = document.querySelector ('.search-bar');
-
-    // Handle search-bar pinning
-    window.onscroll = () => {
-      const top = (window.pageYOffset || document.documentElement.scrollTop) - (document.documentElement.clientTop || 0);
-      const margin = parseInt (document.defaultView.getComputedStyle (search_bar_container).getPropertyValue ('margin-top'));
-      const input_top = title.getBoundingClientRect ().bottom + margin + top - (window.innerWidth * 0.02);
-      if (input_top <= top) {
-        search_bar_container.classList.add ('fixed');
-      } else  {
-        search_bar_container.classList.remove ('fixed');
-      }
-    };
 
     // Require new and shiny API.
     const {Connector, Provider} = require ('../js/coinmarketcap.api.js');
@@ -80,11 +67,11 @@
         // Update DOM from cache
         return update_dom ();
       }
-      
+
       // Initialize variables
       let match = false;
       let alt_matches = [];
-      
+
       // Grab cached data
       const data = await provider.__retrieve_cached ();
 
