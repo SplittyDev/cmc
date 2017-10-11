@@ -18,27 +18,27 @@ command -v cleancss >/dev/null 2>&1 || {
 echo "Transpiling SASS..."
 
 # Check if SASS file exists
-if [ ! -f content/sass/style.sass ]; then
-    echo "File not found: content/sass/style.sass"
+if [ ! -f src/content/sass/style.sass ]; then
+    echo "File not found: src/content/sass/style.sass"
     echo "Please navigate to project root and try again."
     exit 1
 fi
 
 # Start SASS
-sass content/sass/style.sass content/css/style.css
+sass src/content/sass/style.sass src/content/css/style.css
 
 # Minify
 echo "Minifying CSS..."
 
 # Check if CSS file exists
-if [ ! -f content/css/style.css ]; then
-    echo "File not found: content/css/style.css"
+if [ ! -f src/content/css/style.css ]; then
+    echo "File not found: src/content/css/style.css"
     echo "Please check if this file exists and try again."
     exit 1
 fi
 
 # Start CleanCSS CLI
-cleancss content/css/style.css -o content/css/style.min.css
+cleancss src/content/css/style.css -o src/content/css/style.min.css
 
 # Check for Electron
 command -v electron >/dev/null 2>&1 || {
