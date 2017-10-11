@@ -8,8 +8,8 @@ CMC is an inofficial desktop client for [coinmarketcap].
 - No need to refresh, data is updated automagically! <- worst pun
 
 ## Screenshots
-![CMC Screenshot One](preview_one.png)
-![CMC Screenshot Two](preview_two.png)
+![CMC Screenshot One](preview_one.png | width=300)
+![CMC Screenshot Two](preview_two.png | width=300)
 
 ## Download
 [Prebuilt binaries][prebuilt] are available for Windows and Linux.
