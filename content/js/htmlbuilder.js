@@ -2,8 +2,8 @@ class CoinMarketCapHtmlBuilder {
 
     /**
      * Creates an instance of CoinMarketCapHtmlBuilder.
-     * 
-     * @param {any} options 
+     *
+     * @param {any} options
      * @memberof CoinMarketCapHtmlBuilder
      */
     constructor (options) {
@@ -26,7 +26,7 @@ class CoinMarketCapHtmlBuilder {
 
         // Create html string
         let html = String ();
-        
+
         // Iterate over cryptocurrencies
         for (const cc of data) {
             html += `

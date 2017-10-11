@@ -17,22 +17,13 @@ $font-size-title:       2em
 $font-size-subtitle:    1.75em
 $font-size-caption:     1.35em
 $font-size-label:       1.15em
+$font-size-default:     .9rem
 
 // Mixins
 =z-animate($time)
     transition: box-shadow $time ease-in-out
-=z-depth-0
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.10), 0 1px 5px 0 rgba(0,0,0,0.08), 0 3px 1px -2px rgba(0,0,0,0.03)
-=z-depth-1
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.10), 0 3px 1px -2px rgba(0,0,0,0.2)
-=z-depth-2
-    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3)
-=z-depth-3
-    box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.3)
-=z-depth-4
-    box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.3)
-=z-depth-5
-    box-shadow: 0 16px 24px 2px rgba(0,0,0,0.14), 0 6px 30px 5px rgba(0,0,0,0.12), 0 8px 10px -5px rgba(0,0,0,0.3)
+=card
+    box-shadow: 0 15px 35px rgba(50, 50, 75, .1), 0 5px 15px rgba(0, 0, 0,.05)
 
 // Fonts
 @font-face
@@ -45,18 +36,25 @@ $font-size-label:       1.15em
     font-family: "Roboto Medium"
     src: url('../font/roboto/Roboto-Medium.ttf') format("truetype")
 
+*
+    box-sizing: border-box
+    margin: 0
+    padding: 0
+
 body
-    margin: 0 0 0 0
-    padding: 0 0 0 0
     color: $color-primary
     background-color: darken($color-box, 3.1%)
+    min-height: 100vh
     // background: url('../img/pattern_light.png')
+
     font-family: $font-light, sans-serif
-    font-size: 13pt
+    font-size: 16px
+
+    display: flex
+    flex-direction: column
 
 h1
-    margin: 1.5rem 0 0 0
-    padding: 0 0 0 0
+    margin-top: 3rem
     text-align: center
     font-family: $font-light
     font-size: $font-size-title
@@ -64,93 +62,97 @@ h1
     line-height: 2rem
 
 .search-bar
-    +z-animate(.75s)
-    &.fixed
-        +z-depth-4
-        margin: 0 auto
-        position: fixed
-        top: 0
-        left: 1em
-        right: 1em
-    &:not(.fixed)
-        +z-depth-2
-        margin: 1.5rem auto 0 auto
-        position: relative
-    height: 2em
-    width: 90%
-    font-size: $font-size-caption
+    +card
+    z-index: 1000
+    position: sticky
+    top: 1rem
+    margin: 3rem 0
+    left: 10%
+    width: 80%
     display: flex
-    justify-content: center
+
     .search-bar-input
         text-align: center
         border: none
         flex-grow: 1
-        padding: .5rem .75rem .5rem .75rem
-        line-height: 1rem
+        padding: 0 .7rem
+        line-height: 2.5rem
+        height: 2.5rem
         font-family: $font-light
-        font-size: 1.25rem
+        font-size: $font-size-default
+        outline: none
 
-.container .placeholder
-    font-size: 2em
-    margin: 0 auto
-    text-align: center
-    position: absolute;
-    top: 50vh;
-    left: 0;
-    width: 100vw;
-    height: 200px;
+.container
+    position: relative
+    flex: 1
+
+    .placeholder
+        font-size: $font-size-title
+        text-align: center
+        position: absolute
+        transform: translateY(-50%)
+        width: 100%
+        top: 50%
+        left: 0
 
 ul.coins
-    margin: 2em 0 0 0
-    padding: 0 0 0 0
     list-style: none
 
-    >li.coin
-        +z-depth-2
-        width: 75%
-        margin: 0 auto 1em auto
-        padding: 1.5em 1.5em 1.5em 1.5em
-        line-height: 1.5em
+    > li.coin
+        +card
+        width: 80%
+        padding: 1.5rem
+        margin: 0 auto
+        line-height: 1.5rem
         // background-color: rgba(0, 0, 0, 0.02)
         background-color: $color-box
+
+        + li.coin
+            margin-top: 3rem
+
         .header
-            margin: 0 0 1rem 0
+            margin-bottom: 2rem
             display: flex
             justify-content: space-between
             font-size: $font-size-subtitle
+
             .coin-symbol
                 color: lighten($color-primary, 50%)
+                font-size: $font-size-caption
+
         .truncation-notice
             text-align: center
             font-size: 1.25em
             .question
                 display: inline-block
-                border-bottom: 1px dotted rgba(0, 0, 0, 0.3)
                 cursor: help
             .hint
                 display: block
-                cursor: help
-                margin-top: .5rem
+                margin-top: 1rem
                 font-family: $font-regular
-        >div>div.cat
-            +z-depth-3
-            background-color: rgba(0, 0, 0, 0.01)
-            padding: 1em 1em 1em 1em
-            margin: .5em 0 .5em 0
-            border-radius: 3px 3px
-            >span.title
+
+        .cat
+            + .cat
+                margin-top: 2rem
+
+            > .title
                 display: block
                 margin-bottom: .5rem
                 font-size: $font-size-caption
-            >.elem
+                font-weight: bold
+
+            > .elem
                 display: flex
                 justify-content: space-between
+
                 .label
                     font-family: $font-regular
                     color: lighten($color-primary, 30%)
                     flex-grow: 1
+
                 .value
-                    text-align: right
+                    color: darkgray
+
                 .arrow
                     font-family: $font-bold
                     font-size: 1.25rem
@@ -159,10 +161,13 @@ ul.coins
                         color: $color-arrow-up
                     &.arrow-down
                         color: $color-arrow-down
+
                 .currency, .unit
                     font-family: $font-light
                     color: lighten($color-primary, 30%)
+
                 .currency
                     padding-left: 1em
+
                 .unit
                     padding-left: 0.2em
