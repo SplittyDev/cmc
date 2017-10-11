@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Coin Market Cap</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="../css/style.min.css">
+  </head>
+  <body>
+    <h1>Coin Market Cap</h1>
+    <div class="search-bar">
+        <input
+          class="search-bar-input"
+          placeholder="Search for cryptocurrency..."
+          type="text">
+    </div>
+    <div class="container">
+      <!-- Filled by JS. -->
+      <div class="placeholder">Fetching...</div>
+    </div>
+  </body>
+
+  <script>
+    // Constants
+    const DISPLAY_LIMIT = 20;
+    const FETCH_INTV = 20000;
+
+    // Grab HTML elements
+    const title = document.getElementsByTagName ('h1')[0];
+    const container = document.getElementsByClassName ('container')[0];
+    const search_bar = document.querySelector ('.search-bar-input');
+    const search_bar_container = document.querySelector ('.search-bar');
+
+    // Handle search-bar pinning
+    window.onscroll = () => {
+      const top = (window.pageYOffset || document.documentElement.scrollTop) - (document.documentElement.clientTop || 0);
+      const margin = parseInt (document.defaultView.getComputedStyle (search_bar_container).getPropertyValue ('margin-top'));
+      const input_top = title.getBoundingClientRect ().bottom + margin + top - (window.innerWidth * 0.02);
+      if (input_top <= top) {
+        search_bar_container.classList.add ('fixed');
+      } else  {
+        search_bar_container.classList.remove ('fixed');
+      }
+    };
+
+    // Require new and shiny API.
+    const {Connector, Provider} = require ('../js/coinmarketcap.api.js');
+    const {HtmlBuilder} = require ('../js/htmlbuilder.js');
+
+    // Create instances
+    const connector = new Connector ();
+    const provider = new Provider (connector);
+    const builder = new HtmlBuilder ();
+
+    const update_dom = async () => {
+
+      // Get cached data
+      const data = await provider.__retrieve_cached ({
+        display_limit: DISPLAY_LIMIT,
+      });
+
+      // Build html representation
+      container.innerHTML = builder.build (data, { trunc_info_block: true });
+    };
+
+    const fetch_initialize = async () => {
+
+      // Fill cache
+      await provider.fill_cache ();
+
+      // Update DOM
+      update_dom ();
+    };
+
+    const update_dom_dynamic = async () => {
+
+      // Test if search-bar is empty
+      if (search_bar.value.length === 0) {
+
+        // Update DOM from cache
+        return update_dom ();
+      }
+      
+      // Initialize variables
+      let match = false;
+      let alt_matches = [];
+      
+      // Grab cached data
+      const data = await provider.__retrieve_cached ();
+
+      // Iterate over cached coins
+      for (const coin of data) {
+
+        // Get lowercase search term
+        let value = search_bar.value.toLowerCase ();
+
+        // Test if search term matches any coins
+        if (
+          coin.symbol.toLowerCase () === value
+          || coin.id.toLowerCase () === value
+          || coin.name.toLowerCase () === value
+        ) {
+
+          // We found a match
+          match = true;
+
+          // Update DOM with cached data
+          container.innerHTML = builder.build ([coin]);
+        }
+
+        // Test if alternative cryptocurrency matches
+        else if (true
+          && coin.name.toLowerCase ().includes (value)
+          && alt_matches.length < DISPLAY_LIMIT
+        ) alt_matches.push (coin); // Add cryptocurrency to match list
+      }
+
+      // Test if alternative matches were found
+      if (!match && alt_matches.length > 0) {
+
+        // Update DOM with matched data
+        container.innerHTML = builder.build (alt_matches);
+      } else if (!match) {
+        container.innerHTML = `<div class="placeholder">Cryptocurrency not found :(</div>`;
+      }
+    };
+
+    // Initialize cache and update DOM
+    fetch_initialize ();
+
+    // Set update interval
+    setInterval (() => {
+
+      // Update cache
+      provider.fill_cache ().then (_ => {
+
+          // Update DOM dynamically
+          update_dom_dynamic ();
+        }).catch (err => console.log (err));
+    }, FETCH_INTV);
+
+    // Handle search functionality
+    search_bar.oninput = update_dom_dynamic;
+  </script>
+</html>

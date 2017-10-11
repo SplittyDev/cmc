@@ -1,0 +1,29 @@
+{
+  "name": "cmc",
+  "version": "1.0.0",
+  "description": "A simple and functional coinmarketcap.com browser.",
+  "main": "main.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development electron .",
+    "build": "node ./build.js"
+  },
+  "keywords": [
+    "cryptocoin",
+    "cryptocurrency",
+    "coinmarketcap",
+    "market",
+    "marketcap",
+    "market cap",
+    "bitcoin",
+    "exchange"
+  ],
+  "author": "SplittyDev",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^5.0.5",
+    "electron": "~1.6.2",
+    "electron-packager": "^9.1.0",
+    "electron-reload": "^1.2.1"
+  },
+  "dependencies": {}
+}
