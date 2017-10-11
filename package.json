@@ -4,8 +4,9 @@
   "description": "A simple and functional coinmarketcap.com browser.",
   "main": "src/main.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development electron .",
-    "build": "node ./build.js"
+    "live": "npm run build && cross-env NODE_ENV=development electron .",
+    "build": "node ./build.js",
+    "pack": "node ./build.js pack"
   },
   "keywords": [
     "cryptocoin",
@@ -20,10 +21,14 @@
   "author": "SplittyDev",
   "license": "MIT",
   "devDependencies": {
+    "clean-css": "^4.1.9",
     "cross-env": "^5.0.5",
+    "docopt": "^0.6.2",
     "electron": "~1.6.2",
     "electron-packager": "^9.1.0",
-    "electron-reload": "^1.2.1"
+    "electron-reload": "^1.2.1",
+    "glob-fs": "^0.1.7",
+    "sass": "^1.0.0-beta.2"
   },
   "dependencies": {}
 }
