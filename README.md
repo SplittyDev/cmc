@@ -7,6 +7,9 @@ CMC is an inofficial desktop client for [coinmarketcap].
 - Analyze trends and market development with the built-in growth indicators
 - No need to refresh, data is updated automagically!
 
+## Screenshots
+![CMC Screenshot](preview.png)
+
 ## Download
 [Prebuilt binaries][prebuilt] are available for Windows and Linux.
 
