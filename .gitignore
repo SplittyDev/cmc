@@ -7,3 +7,6 @@ bin/*
 
 # SASS
 .sass-cache/
+
+# OSX
+.DS_Store
