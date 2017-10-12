@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const docopt = require('docopt').docopt;
 const packager = require('electron-packager');
 const sass = require('sass/sass.dart.js');
 const cleancss = require('clean-css');

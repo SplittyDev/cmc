@@ -8,5 +8,8 @@ bin/*
 # SASS
 .sass-cache/
 
+# VS Code
+.vscode
+
 # OSX
 .DS_Store
