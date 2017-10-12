@@ -4,7 +4,7 @@
   "description": "A simple and functional coinmarketcap.com browser.",
   "main": "src/main.js",
   "scripts": {
-    "live": "npm run build && cross-env NODE_ENV=development electron .",
+    "live": "npm run build && cross-env NODE_ENV=development ./node_modules/.bin/electron .",
     "build": "node ./build.js",
     "pack": "node ./build.js pack"
   },
@@ -21,6 +21,7 @@
   "author": "SplittyDev",
   "license": "MIT",
   "devDependencies": {
+    "chokidar": "^1.7.0",
     "clean-css": "^4.1.9",
     "cross-env": "^5.0.5",
     "electron": "^1.6.15",

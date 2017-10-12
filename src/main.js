@@ -9,7 +9,23 @@ const url = require('url')
 
 if ((process.env.NODE_ENV || 'production') === 'development') {
   // Live reload
-  require('electron-reload')(__dirname);
+  require('electron-reload')(__dirname, {
+    ignored: /node_modules|content\/sass|[\/\\]\./,
+  });
+  const chokidar = require('chokidar');
+  let sass_watcher = chokidar.watch(path.join(__dirname, 'content/sass/*.sass'));
+  let rebuilding = false;
+  sass_watcher.on('change', () => {
+    if (rebuilding) {
+      console.log('Still rebuilding.. Please wait.');
+      return;
+    }
+    rebuilding = true;
+    console.log('Rebuilding files...');
+    require('../build')();
+    console.log('Finished rebuilding files!');
+    rebuilding = false;
+  });
 }
 
 // Keep a global reference of the window object, if you don't, the window will
