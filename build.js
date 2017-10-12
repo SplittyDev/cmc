@@ -6,13 +6,6 @@ const packager = require('electron-packager');
 const sass = require('sass/sass.dart.js');
 const cleancss = require('clean-css');
 
-const doc = `
-Usage:
-  build
-  run
-  pack
-`;
-
 function build() {
   console.log('Building content...');
   const dir_content = path.join(__dirname, 'src/content');
