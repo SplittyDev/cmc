@@ -122,9 +122,9 @@
       // Update cache
       provider.fill_cache ().then (_ => {
 
-          // Update DOM dynamically
-          update_dom_dynamic ();
-        }).catch (err => console.log (err));
+        // Update DOM dynamically
+        update_dom_dynamic ();
+      }).catch (err => console.log (err));
     }, FETCH_INTV);
 
     // Handle search functionality
