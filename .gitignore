@@ -5,6 +5,9 @@ node_modules
 bin/*
 !bin/.gitkeep
 
+# Generated CSS
+src/content/css
+
 # SASS
 .sass-cache/
 
