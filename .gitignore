@@ -6,7 +6,8 @@ bin/*
 !bin/.gitkeep
 
 # Generated CSS
-src/content/css
+src/content/css/*
+!src/content/css/.gitkeep
 
 # SASS
 .sass-cache/

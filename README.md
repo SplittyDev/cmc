@@ -24,5 +24,7 @@ npm i
 npm run build
 ```
 
+Node 8.1.2+ is highly recommended for building.
+
 [coinmarketcap]: https://coinmarketcap.com
 [prebuilt]: https://github.com/SplittyDev/cmc/releases/latest

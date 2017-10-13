@@ -4,6 +4,7 @@ const path = require('path');
 const packager = require('electron-packager');
 const sass = require('sass/sass.dart.js');
 const cleancss = require('clean-css');
+const archiver = require('archiver');
 
 const wasRequired = require.main !== module;
 
@@ -35,30 +36,37 @@ function build() {
   fs.writeFileSync(path.join(dir_css, 'style.css.map'), minified_css.sourceMap);
 }
 
-function pack() {
+async function pack() {
   build();
   log('Packaging files...');
   const options = {
     dir: __dirname,
-    out: path.join(__dirname, 'bin'),
+    out: path.join(__dirname, 'bin', process.env.npm_package_version),
     all: true, // build for all platforms
     asar: true, // use asar archive format
     overwrite: true, // always produce clean builds
     download: {
       strictSSL: true, // require SSL
     },
-    icon: "icon/icon", // extension is auto-completed
+    icon: "src/icon/icon", // extension is auto-completed
   };
   if (options.asar) log('-- Using ASAR archive format.');
   if (options.all) log('-- Building for all supported platforms.');
-  packager(options)
-    .then((appPaths) => {
-      for (let appPath of appPaths) {
-        log(`Prebuilt: ${path.basename(appPath)}`);
-      }
-    }).catch(e => {
-      log(e);
+  const appPaths = await packager(options);
+  let zipped = 0;
+  for (let appPath of appPaths) {
+    log(`-- Built ${path.basename(appPath)}.`);
+    log(`-- Zipping ${path.basename(appPath)}...`);
+    const output = fs.createWriteStream(`${appPath}.zip`);
+    const archive = archiver("zip");
+    archive.on('finish', () => {
+      console.log(`-- Finished zipping ${path.basename(appPath)}.`);
+      zipped += 1;
     });
+    archive.pipe(output);
+    archive.directory(appPath, false);
+    archive.finalize();
+  }
 }
 
 function main() {
