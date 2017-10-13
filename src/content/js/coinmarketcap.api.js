@@ -208,15 +208,15 @@ class CoinMarketCapProvider {
    *
    * @memberof CoinMarketCapProvider
    */
-  fill_cache () {
+  fill_cache (options) {
 
     // Promise wrapper function
     function promiseWrapper (resolve, reject) {
 
       // Send request
-      this.send_request ({
+      this.send_request (Object.assign(options || {}, {
         cache: true, // cache request
-      }).then (data => {
+      })).then (data => {
 
         // Resolve with cached data
         return resolve (data);
@@ -341,4 +341,5 @@ class CoinMarketCapProvider {
 module.exports = {
   Connector: CoinMarketCapConnector,
   Provider: CoinMarketCapProvider,
+  SupportedCurrencies: SUPPORTED_CURRENCIES,
 };

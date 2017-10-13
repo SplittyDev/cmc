@@ -30,5 +30,7 @@
     "glob-fs": "^0.1.7",
     "sass": "^1.0.0-beta.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "opn": "^5.1.0"
+  }
 }

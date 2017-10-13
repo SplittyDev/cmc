@@ -24,6 +24,8 @@ class CoinMarketCapHtmlBuilder {
     // Sanitize: Make trunc_info_block a boolean.
     options.trunc_info_block = Boolean (options.trunc_info_block);
 
+    const currency_lower = options.currency.toLowerCase ();
+
     // Create html string
     let html = String ();
 
@@ -40,7 +42,7 @@ class CoinMarketCapHtmlBuilder {
             <span class="title">Price</span>
             <div class="elem">
               <span class="label">Fiat</span>
-              <span class="value">${cc.price_usd}</span>
+              <span class="value">${cc[`price_${currency_lower}`]}</span>
               <span class="currency">${options.currency}</span>
             </div>
             <div class="elem">
@@ -53,12 +55,12 @@ class CoinMarketCapHtmlBuilder {
             <span class="title">Market</span>
             <div class="elem">
               <span class="label">24h Volume</span>
-              <span class="value">${cc['24h_volume_usd']}</span>
+              <span class="value">${cc[`24h_volume_${currency_lower}`]}</span>
               <span class="currency">${options.currency}</span>
             </div>
             <div class="elem">
               <span class="label">Market Cap</span>
-              <span class="value">${cc.market_cap_usd}</span>
+              <span class="value">${cc[`market_cap_${currency_lower}`]}</span>
               <span class="currency">${options.currency}</span>
             </div>
             <div class="elem">

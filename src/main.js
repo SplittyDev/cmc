@@ -4,8 +4,15 @@ const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
+const cmcApi = require('./content/js/coinmarketcap.api');
+
 const path = require('path')
 const url = require('url')
+
+// Set global state variable
+global.cmcstate = {
+  currency: 'USD',
+};
 
 if ((process.env.NODE_ENV || 'production') === 'development') {
   // Live reload
@@ -39,6 +46,62 @@ function createWindow () {
     height: 800,
     icon: path.join(__dirname, "icon/icon.png"),
   })
+
+  const menu_template = [
+    {
+      label: 'App',
+      submenu: [
+        { role: 'quit' },
+      ]
+    },
+    { role: 'editMenu' },
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { type: 'separator' },
+        { role: 'resetzoom' },
+        { role: 'zoomin' },
+        { role: 'zoomout' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' },
+      ]
+    },
+    { role: 'windowMenu' },
+    {
+      label: 'Options',
+      submenu: [
+        {
+          label: 'Convert Currency',
+          submenu: cmcApi.SupportedCurrencies.map(val => ({
+            label: val,
+            click() { global.cmcstate.currency = val; },
+          })),
+        }
+      ]
+    },
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'Report a bug (requires GitHub account)',
+          click() { require('opn')('https://github.com/SplittyDev/cmc/issues/new') },
+        }
+      ]
+    },
+  ];
+  if ((process.env.NODE_ENV || 'production') === 'development') {
+    menu_template.push({
+      label: 'Developer Tools',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forcereload' },
+        { role: 'toggledevtools' },
+      ],
+    });
+  }
+  const menu = electron.Menu.buildFromTemplate(menu_template);
+  electron.Menu.setApplicationMenu(menu);
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
