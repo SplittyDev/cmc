@@ -28,7 +28,9 @@
     "electron": "^1.6.15",
     "electron-packager": "^9.1.0",
     "electron-reload": "^1.2.1",
-    "glob-fs": "^0.1.7",
+    "eslint": "^4.8.0",
+    "eslint-config-airbnb-base": "^12.0.2",
+    "eslint-plugin-import": "^2.7.0",
     "sass": "^1.0.0-beta.2"
   },
   "dependencies": {

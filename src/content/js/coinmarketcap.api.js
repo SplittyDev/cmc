@@ -22,15 +22,13 @@ const SUPPORTED_CURRENCIES = [
 // CoinMarketCap Connector class.
 // Provides basic functionality.
 class CoinMarketCapConnector {
-
   /**
    * Creates an instance of CoinMarketCapAPI.
    *
    * @param {object} options
    * @memberof CoinMarketCapAPI
    */
-  constructor (options) {
-
+  constructor(options) {
     // Set class-level options
     this.options = options || {};
   }
@@ -42,52 +40,37 @@ class CoinMarketCapConnector {
    * @param {any} next
    * @memberof CoinMarketCapAPI
    */
-  send_request (options) {
-
-    const argument_options = options;
-
+  sendRequest(options) {
     // Promise wrapper function
-    function promiseWrapper (resolve, reject) {
-
+    function promiseWrapper(resolve, reject) {
       // Build options
-      const options = this.__build_options (argument_options);
+      // eslint-disable-next-line no-underscore-dangle
+      const finalOptions = this.buildOptions(options);
 
       // Build API request URL from options
-      const url = this.__build_request_url (options);
+      // eslint-disable-next-line no-underscore-dangle
+      const url = CoinMarketCapConnector.buildRequestUrl(finalOptions);
 
       // Create request
-      fetch (url)
+      fetch(url)
 
         // Grab response
-        .then (response => {
-
-          // Turn JSON response into array
-          return response.json ();
-        })
+        .then(response => response.json())
 
         // Grab json data
-        .then (json => {
-
-          // Resolve promise with fetched data
-          return resolve (json);
-        })
+        .then(json => resolve(json))
 
         // Catch any errors
-        .catch (err => {
-
-          // Reject promise with error
-          return reject (err);
-        });
-    };
+        .catch(err => reject(err));
+    }
 
     // Return promise
-    return new Promise (promiseWrapper.bind (this));
+    return new Promise(promiseWrapper.bind(this));
   }
 
-  __build_options (argument_options) {
-
+  buildOptions(options) {
     // Create default options
-    const default_options = {
+    const defaultOptions = {
       // Max amount of fetched cryptocurrencies.
       // A value of zero means no limit.
       limit: 0,
@@ -104,45 +87,53 @@ class CoinMarketCapConnector {
     };
 
     // Merge options correctly
-    let options = Object.assign (
-      {},                     // empty object to merge into
-      default_options,        // merge default options first
-      this.options     || {}, // merge class-level options second
-      argument_options || {}  // merge argument options last
+    const finalOptions = Object.assign(
+      // empty object to merge into
+      {},
+      // merge default options first
+      defaultOptions,
+      // merge class-level options second
+      this.options || {},
+      // merge argument options last
+      // eslint-disable-next-line comma-dangle
+      options || {}
     );
 
     // Sanitize: Force limit to be a positive integer.
-    options.limit = Math.abs (options.limit|0);
+    // eslint-disable-next-line no-bitwise
+    finalOptions.limit = Math.abs(finalOptions.limit | 0);
 
     // Sanitize: Make currency an uppercase string.
-    options.currency = String (options.currency || 'USD').toUpperCase ();
+    finalOptions.currency = String(finalOptions.currency || 'USD').toUpperCase();
 
     // Test currency against supported currencies
-    if (!SUPPORTED_CURRENCIES.includes (options.currency)) {
-      throw new Error (`Unsupported currency: ${options.currency}`);
+    if (!SUPPORTED_CURRENCIES.includes(finalOptions.currency)) {
+      throw new Error(`Unsupported currency: ${finalOptions.currency}`);
     }
 
     // If the id is truthy, we want to fetch a single currency
-    if (options.id) {
-      options._fetch_custom = true;
+    if (finalOptions.id) {
+      // eslint-disable-next-line no-underscore-dangle
+      finalOptions._fetch_custom = true;
     }
 
     // If the currency is not USD, we want to do a conversion
-    if (options.currency !== 'USD') {
-      options._convert_currency = true;
+    if (finalOptions.currency !== 'USD') {
+      // eslint-disable-next-line no-underscore-dangle
+      finalOptions._convert_currency = true;
     }
 
-    return options;
+    // Return valid and sanitized options
+    return finalOptions;
   }
 
-  __build_request_url (options) {
-
+  static buildRequestUrl(options) {
     // Start with base url
     let url = 'https://api.coinmarketcap.com/v1/ticker/';
 
     // Test if a specific cryptocurrency should be fetched
+    // eslint-disable-next-line no-underscore-dangle
     if (options._fetch_custom) {
-
       // Add cryptocurrency id to url
       url += `${options.id}/`;
     }
@@ -151,11 +142,13 @@ class CoinMarketCapConnector {
     url += '?';
 
     // Test if a limit should be added
-    if ((options.limit|0) > 0) {
+    // eslint-disable-next-line no-underscore-dangle, no-bitwise
+    if ((options.limit | 0) > 0) {
       url += `&limit=${options.limit}`;
     }
 
     // Test if a currency conversion should be done
+    // eslint-disable-next-line no-underscore-dangle
     if (options._convert_currency) {
       url += `&convert=${options.currency}`;
     }
@@ -168,25 +161,24 @@ class CoinMarketCapConnector {
 // CoinMarketCap Provider class.
 // Provides abstractions such as caching.
 class CoinMarketCapProvider {
-
   /**
    * Creates an instance of CoinMarketCapProvider.
    *
    * @param {CoinMarketCapConnector} connector
    * @memberof CoinMarketCapProvider
    */
-  constructor (connector) {
-
+  constructor(connector) {
     // Set class-level connector
-    this.connector = connector || new CoinMarketCapConnector ();
+    this.connector = connector || new CoinMarketCapConnector();
 
     // Create cache and last cache
     this.cache = [];
     this.last_cache = [];
   }
 
-  cache_diff (options) {
-  }
+  // TODO
+  // static cache_diff(options) {
+  // }
 
   /**
    * Queries the cached data.
@@ -195,12 +187,12 @@ class CoinMarketCapProvider {
    * @param {any} options
    * @memberof CoinMarketCapProvider
    */
-  query (options) {
-
+  query(options) {
     // TODO: Add more sophisticated logic here
 
     // For now, just return the __retrieve_cached promise
-    return this.__retrieve_cached (options);
+    // eslint-disable-next-line no-underscore-dangle
+    return this.__retrieveCached(options);
   }
 
   /**
@@ -208,60 +200,53 @@ class CoinMarketCapProvider {
    *
    * @memberof CoinMarketCapProvider
    */
-  fill_cache (options) {
-
+  fillCache(options) {
     // Promise wrapper function
-    function promiseWrapper (resolve, reject) {
-
-      // Send request
-      this.send_request (Object.assign(options || {}, {
+    function promiseWrapper(resolve, reject) {
+      // Build options
+      const finalOptions = Object.assign(options || {}, {
         cache: true, // cache request
-      })).then (data => {
-
-        // Resolve with cached data
-        return resolve (data);
-      }).catch (err => {
-
-        // Reject with error
-        return reject (err);
       });
+      // Send request
+      this.sendRequest(finalOptions)
+        .then(data => resolve(data))
+        .catch(err => reject(err));
     }
 
     // Return promise
-    return new Promise (promiseWrapper.bind (this));
+    return new Promise(promiseWrapper.bind(this));
   }
 
-  __retrieve_cached (options) {
-
+  __retrieveCached(options) {
     // Promise wrapper function
-    function promiseWrapper (resolve, reject) {
-
+    function promiseWrapper(resolve, reject) {
       // Test if cache is empty
       if (this.cache.length === 0) {
-        return reject (new Error ('Cache is empty!'));
+        return reject(new Error('Cache is empty!'));
       }
 
       // Merge options
-      options = Object.assign ({
+      const finalOptions = Object.assign({
         display_limit: 0,
       }, options);
 
       // Sanitize: Force display limit to be a non-negative integer.
-      options.display_limit = Math.max (0, options.display_limit|0);
+      // eslint-disable-next-line no-bitwise
+      finalOptions.display_limit = Math.max(0, finalOptions.display_limit | 0);
 
       // Create data slice
       const data = (
-        options.display_limit > 0
-        ? this.cache.slice (0, options.display_limit)
-        : this.cache
+        finalOptions.display_limit > 0
+          ? this.cache.slice(0, finalOptions.display_limit)
+          : this.cache
       );
 
       // Resolve the promise
-      return resolve (data);
+      return resolve(data);
     }
 
     // Return promise
-    return new Promise (promiseWrapper.bind (this));
+    return new Promise(promiseWrapper.bind(this));
   }
 
   /**
@@ -272,13 +257,11 @@ class CoinMarketCapProvider {
    * @returns
    * @memberof CoinMarketCapProvider
    */
-  send_request (options) {
-
+  sendRequest(options) {
     // Promise wrapper function
-    function promiseWrapper (resolve, reject) {
-
+    function promiseWrapper(resolve, reject) {
       // Merge options
-      options = Object.assign ({
+      const finalOptions = Object.assign({
         /*
          * Provider options.
          */
@@ -294,31 +277,26 @@ class CoinMarketCapProvider {
       }, options);
 
       // Sanitize: Make cache a boolean
-      options.cache = Boolean (options.cache);
+      finalOptions.cache = Boolean(options.cache);
 
       // Send request
-      this.connector.send_request (options)
-        .then (data => {
-
+      this.connector.sendRequest(finalOptions)
+        .then((data) => {
           // Test if result should be cached
-          if (options.cache === true) {
-
+          if (finalOptions.cache === true) {
             // Cache result
-            this.__cache_result (data);
+            // eslint-disable-next-line no-underscore-dangle
+            this.__cacheResult(data);
           }
 
           // Resolve promise with data
-          return resolve (data);
+          return resolve(data);
         })
-        .catch (err => {
-
-          // Reject promise with error
-          return reject (err);
-        });
+        .catch(err => reject(err));
     }
 
     // Return promise
-    return new Promise (promiseWrapper.bind (this));
+    return new Promise(promiseWrapper.bind(this));
   }
 
   /**
@@ -327,8 +305,7 @@ class CoinMarketCapProvider {
    * @param {any} data
    * @memberof CoinMarketCapProvider
    */
-  __cache_result (data) {
-
+  __cacheResult(data) {
     // Update last cache
     this.last_cache = this.cache;
 

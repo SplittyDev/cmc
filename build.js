@@ -1,39 +1,42 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 const fs = require('fs');
 const path = require('path');
 
 const packager = require('electron-packager');
 const sass = require('sass/sass.dart.js');
-const cleancss = require('clean-css');
+const Cleancss = require('clean-css');
 const archiver = require('archiver');
 
 const wasRequired = require.main !== module;
 
 function log(msg) {
   if (wasRequired) return;
+  // eslint-disable-next-line no-console
   console.log(msg);
 }
 
 function build() {
   log('Building content...');
-  const dir_content = path.join(__dirname, 'src/content');
-  const dir_sass = path.join(dir_content, 'sass');
-  const dir_css = path.join(dir_content, 'css');
+  const dirContent = path.join(__dirname, 'src/content');
+  const dirSass = path.join(dirContent, 'sass');
+  const dirCss = path.join(dirContent, 'css');
 
   // Transpile SASS
   log('-- Transpiling SASS...');
-  const compiled_sass = sass
-    .renderSync({file: path.join(dir_sass, 'style.sass')})
+  const compiledSass = sass
+    .renderSync({ file: path.join(dirSass, 'style.sass') })
     .css.toString('utf8');
 
   // Minify CSS
   log('-- Minifying CSS...');
-  const minified_css = new cleancss().minify(compiled_sass);
+  const minifiedCss = new Cleancss().minify(compiledSass);
 
   // Save css
   log('-- Writing files to disk...');
-  fs.writeFileSync(path.join(dir_css, 'style.css'), compiled_sass);
-  fs.writeFileSync(path.join(dir_css, 'style.min.css'), minified_css.styles);
-  fs.writeFileSync(path.join(dir_css, 'style.css.map'), minified_css.sourceMap);
+  fs.writeFileSync(path.join(dirCss, 'style.css'), compiledSass);
+  fs.writeFileSync(path.join(dirCss, 'style.min.css'), minifiedCss.styles);
+  fs.writeFileSync(path.join(dirCss, 'style.css.map'), minifiedCss.sourceMap);
 }
 
 async function pack() {
@@ -48,31 +51,28 @@ async function pack() {
     download: {
       strictSSL: true, // require SSL
     },
-    icon: "src/icon/icon", // extension is auto-completed
+    icon: 'src/icon/icon', // extension is auto-completed
   };
   if (options.asar) log('-- Using ASAR archive format.');
   if (options.all) log('-- Building for all supported platforms.');
   const appPaths = await packager(options);
-  let zipped = 0;
-  for (let appPath of appPaths) {
-    log(`-- Built ${path.basename(appPath)}.`);
-    log(`-- Zipping ${path.basename(appPath)}...`);
+  appPaths.forEach((appPath) => {
+    log(`-- Built ${path.basename(appPath)}, zipping now...`);
     const output = fs.createWriteStream(`${appPath}.zip`);
-    const archive = archiver("zip");
+    const archive = archiver('zip');
     archive.on('finish', () => {
-      console.log(`-- Finished zipping ${path.basename(appPath)}.`);
-      zipped += 1;
+      log(`-- Finished zipping ${path.basename(appPath)}.`);
     });
     archive.pipe(output);
     archive.directory(appPath, false);
     archive.finalize();
-  }
+  });
 }
 
 function main() {
   const args = process.argv.slice(2);
   if (args[0] === 'pack') pack();
-  else build ();
+  else build();
 }
 
 if (!wasRequired) {
