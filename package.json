@@ -1,6 +1,6 @@
 {
   "name": "cmc",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A simple and functional coinmarketcap.com browser.",
   "main": "src/main.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "clean-css": "^4.1.9",
     "cross-env": "^5.0.5",
     "electron": "^1.6.15",
+    "electron-installer-windows": "^0.2.0",
     "electron-packager": "^9.1.0",
     "electron-reload": "^1.2.1",
     "eslint": "^4.8.0",
